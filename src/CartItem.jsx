@@ -1,4 +1,4 @@
-import React from "react";
+import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
 import { removeItem, updateQuantity } from "./CartSlice";
 import "./CartItem.css";
@@ -8,7 +8,7 @@ const CartItem = ({ onContinueShopping }) => {
   const dispatch = useDispatch();
 
   // Calculate total amount for all products in the cart
-  function calculateTotalAmount(cart) {
+  function calculateTotalAmount() {
     let total = 0;
 
     cart.forEach((item) => {
@@ -29,9 +29,9 @@ const CartItem = ({ onContinueShopping }) => {
     onContinueShopping();
   };
 
-  const handleCheckoutShopping = (e) => {
-  alert('Functionality to be added for future reference');
-};
+  const handleCheckoutShopping = () => {
+    alert('Functionality to be added for future reference');
+  };
 
 
   const handleIncrement = (item) => {
@@ -110,10 +110,16 @@ const CartItem = ({ onContinueShopping }) => {
           Continue Shopping
         </button>
         <br />
-        <button className="get-started-button1">Checkout</button>
+        <button className="get-started-button1" onClick={handleCheckoutShopping}>
+          Checkout
+        </button>
       </div>
     </div>
   );
+};
+
+CartItem.propTypes = {
+  onContinueShopping: PropTypes.func.isRequired,
 };
 
 export default CartItem;

@@ -30,6 +30,7 @@ export const CartSlice = createSlice({
   },
 });
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const { addItem, removeItem, updateQuantity } = CartSlice.actions;
 
 export default CartSlice.reducer;

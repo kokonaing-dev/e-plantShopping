@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
+import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import "./ProductList.css";
 import CartItem from "./CartItem";
@@ -8,8 +9,6 @@ function ProductList({ onHomeClick }) {
   const cart = useSelector((state) => state.cart.items);
 
   const [showCart, setShowCart] = useState(false);
-  const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
-  const [addedToCart, setAddedToCart] = useState({});
 
   const plantsArray = [
     {
@@ -261,6 +260,9 @@ function ProductList({ onHomeClick }) {
     justifyContent: "space-between",
     alignItems: "center",
     fontSize: "20px",
+    position: "sticky",
+    top: 0,
+    zIndex: 100,
   };
   const styleObjUl = {
     display: "flex",
@@ -285,28 +287,21 @@ function ProductList({ onHomeClick }) {
   };
   const handlePlantsClick = (e) => {
     e.preventDefault();
-    setShowPlants(true); // Set showAboutUs to true when "About Us" link is clicked
-    setShowCart(false); // Hide the cart when navigating to About Us
+    setShowCart(false); // Return to the product list when navigating to Plants
   };
 
-  const handleContinueShopping = (e) => {
-    e.preventDefault();
+  const handleContinueShopping = () => {
     setShowCart(false);
   };
 
 const handleAddToCart = (product) => {
   dispatch(addItem(product));
-
-  setAddedToCart((prevState) => ({ // Update the local state to reflect that the product has been added
-    ...prevState, // Spread the previous state to retain existing entries
-    [product.name]: true, // Set the current product's name as a key with value 'true' to mark it as added
-  }));
 };
 
 const calculateTotalQuantity = () => { return cart.reduce((total, item) => total + item.quantity, 0); };
 
   return (
-    <div>
+    <div className="product-list-page">
       <div className="navbar" style={styleObj}>
         <div className="tag">
           <div className="luxury">
@@ -367,8 +362,8 @@ const calculateTotalQuantity = () => { return cart.reduce((total, item) => total
               index, // Loop through each category in plantsArray
             ) => (
               <div key={index}>
-                <h1>
-                  <div>{category.category}</div>{" "}
+                <h1 className="plantname_heading">
+                  <div className="plant_heading">{category.category}</div>
                 </h1>
                 <div className="product-list">
                   {category.plants.map(
@@ -386,12 +381,12 @@ const calculateTotalQuantity = () => { return cart.reduce((total, item) => total
                         <div className="product-description">
                           {plant.description}
                         </div>
-                        <div className="product-cost">${plant.cost}</div>
+                        <div className="product-cost">{plant.cost}</div>
                         <button
-                          className={`product-button${addedToCart[plant.name] ? " added-to-cart" : ""}`}
+                          className={`product-button${cart.some((item) => item.name === plant.name) ? " added-to-cart" : ""}`}
                           onClick={() => handleAddToCart(plant)} // Handle adding plant to cart
                         >
-                          {addedToCart[plant.name] ? "Added to Cart" : "Add to Cart"}
+                          {cart.some((item) => item.name === plant.name) ? "Added to Cart" : "Add to Cart"}
                         </button>
                       </div>
                     ),
@@ -407,5 +402,9 @@ const calculateTotalQuantity = () => { return cart.reduce((total, item) => total
     </div>
   );
 }
+
+ProductList.propTypes = {
+  onHomeClick: PropTypes.func.isRequired,
+};
 
 export default ProductList;
